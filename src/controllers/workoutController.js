@@ -1,11 +1,20 @@
 const workoutService = require("../services/workoutService");
 
 const getAllWorkouts = (req, res) => {
-  const allWorkouts = workoutService.getAllWorkouts();
-  res.send({
-    status: "OK",
-    data: allWorkouts,
-  });
+  try {
+    const allWorkouts = workoutService.getAllWorkouts();
+    res.send({
+      status: "OK",
+      data: allWorkouts,
+    });
+  } catch (error) {
+    res.status(error?.status || 500).send({
+      status: "FAILED",
+      data: {
+        error: error?.message || error,
+      }
+    });
+  }
 };
 
 const getOneWorkout = (req, res) => {
@@ -13,11 +22,27 @@ const getOneWorkout = (req, res) => {
     params: { workoutId },
   } = req;
   if (!workoutId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error: "Missing required fields",
+      }
+    });
     return;
   }
 
-  const workout = workoutService.getOneWorkout(workoutId);
-  res.send({ status: "OK", data: workout });
+  try {
+    const workout = workoutService.getOneWorkout(workoutId);
+    res.send({ status: "OK", data: workout });
+  } catch (error) {
+    res.status(error?.status || 500).send({
+      status: "FAILED",
+      data: {
+        error: error?.message || error,
+      }
+    });
+  }
+
 };
 
 const createNewWorkout = (req, res) => {
@@ -66,10 +91,25 @@ const updateOneWorkout = (req, res) => {
     body,
   } = req;
   if (!workoutId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error: "Missing required fields",
+      }
+    });
     return;
   }
-  const updatedWorkout = workoutService.updateOneWorkout(workoutId, body);
-  res.send({ status: "OK", data: updatedWorkout });
+  try {
+    const updatedWorkout = workoutService.updateOneWorkout(workoutId, body);
+    res.send({ status: "OK", data: updatedWorkout });
+  } catch (error) {
+    res.status(error?.status || 500).send({
+      status: "FAILED",
+      data: {
+        error: error?.message || error,
+      }
+    });
+  }
 };
 
 const deleteOneWorkout = (req, res) => {
@@ -77,11 +117,26 @@ const deleteOneWorkout = (req, res) => {
     params: { workoutId },
   } = req;
   if (!workoutId) {
+    res.status(400).send({
+      status: "FAILED",
+      data: {
+        error: "Missing required fields",
+      }
+    });
     return;
   }
 
-  workoutService.deleteOneWorkout(workoutId);
-  res.status(204).send({ status: "OK" });
+  try {
+    workoutService.deleteOneWorkout(workoutId);
+    res.status(204).send({ status: "OK" });
+  } catch (error) {
+    res.status(error?.status || 500).send({
+      status: "FAILED",
+      data: {
+        error: error?.message || error,
+      }
+    });
+  }
 };
 
 module.exports = {

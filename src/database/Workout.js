@@ -1,4 +1,3 @@
-const e = require('express');
 const DB = require('./db.json');
 const { saveToDatabase } = require('./utils');
 
